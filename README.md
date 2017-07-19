@@ -4,7 +4,7 @@
 
 
 *This games is learning C# project for me.  
-I started it because I felt it will be easiest way to learn C#.*
+I started it because I felt it will be easiest way to learn C# (Console application).*
 
 # List of features I've coded into it:  
 - Menus:
