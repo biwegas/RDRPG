@@ -10,6 +10,10 @@ namespace RDRPG
     {
         public static string GameVer = "0.0.2-WiP";
         public static string GameName = "Rolling dice RPG";
+        public static int ItemID = 0;
+        public static int MaxInventorySpace = 10;
+        public static int SelectedItem = 0;
+        static int[] Item = new int[MaxInventorySpace];
         static Person Peep = new Person();
         static Enemy BadGuy = new Enemy();
         static Random rnd = new Random();
@@ -33,7 +37,6 @@ namespace RDRPG
             public int MimicFight;
             public int AddHitpoints;
             public int InventorySpace;
-            public int MaxInventorySpace;
         }
         public struct Enemy
         {
@@ -50,6 +53,10 @@ namespace RDRPG
             Console.WriteLine("Welcome to the " + GameName);
             System.Threading.Thread.Sleep(2000);
             Console.Clear();
+            for(int i = 0; i < 10; i++)
+            {
+                Item[i] = 0;
+            }
         }
         public static double GetRandomNumber(double minimum, double maximum)
         {
@@ -168,7 +175,6 @@ namespace RDRPG
                                 Peep.attackPoints = 5;
                                 Peep.Class = 1;
                                 Peep.InventorySpace = 0;
-                                Peep.MaxInventorySpace = 10;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Warrior";
                                 Peep.goldAmount = 0;
@@ -206,7 +212,6 @@ namespace RDRPG
                                 Peep.accPoints = 10;
                                 Peep.attackPoints = 7;
                                 Peep.InventorySpace = 0;
-                                Peep.MaxInventorySpace = 10;
                                 Peep.Class = 2;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Rogue";
@@ -246,7 +251,6 @@ namespace RDRPG
                                 Peep.accPoints = 10;
                                 Peep.attackPoints = 5;
                                 Peep.InventorySpace = 0;
-                                Peep.MaxInventorySpace = 10;
                                 Peep.Class = 3;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Monk";
@@ -282,7 +286,6 @@ namespace RDRPG
                                 Peep.accPoints = 10;
                                 Peep.attackPoints = 7;
                                 Peep.InventorySpace = 0;
-                                Peep.MaxInventorySpace = 10;
                                 Peep.Class = 9;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Cheat";
@@ -755,13 +758,49 @@ namespace RDRPG
                 }
             }
         }
+        public static void Additem(int ItemID)
+        {
+            if (Peep.InventorySpace < MaxInventorySpace)
+            {
+                Item[Peep.InventorySpace] = ItemID;
+                Peep.InventorySpace++;
+            }
+            else
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Inventory is full");
+                System.Threading.Thread.Sleep(500);
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
+        public static void RemoveItem()
+        {
+            if (Peep.InventorySpace > 0)
+            {
+                if (SelectedItem == MaxInventorySpace)
+                {
+                    Item[SelectedItem] = 0;
+                    Peep.InventorySpace--;
+                }
+                else
+                {
+                    Item[SelectedItem] = Item[SelectedItem + 1];
+                    Peep.InventorySpace--;
+                }
+            }
+        }
         public static void Inventory()
         {
-            while(true)
+            int SelectedItem = 0;
+            while (true)
             {
                 Console.Clear();
                 Console.WriteLine($"{Peep.Name}'s Inventory");
-                Console.WriteLine($"Inventory space {Peep.InventorySpace}/{Peep.MaxInventorySpace}");
+                Console.WriteLine($"Inventory space {Peep.InventorySpace}/{MaxInventorySpace}");
+                if(Peep.InventorySpace > 0)
+                    Console.WriteLine($"You selected [{SelectedItem + 1}] item");
                 Console.WriteLine($"-----------ITEMS------------");
                 if(Peep.InventorySpace == 0)
                 {
@@ -769,15 +808,58 @@ namespace RDRPG
                 }
                 else
                 {
-                    Console.WriteLine("Something");
+                    for(int i = 0; i < MaxInventorySpace - 1; i++)
+                    {
+
+                        if (Item[i] == 0)
+                        {
+                            Console.Write("");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[{i + 1}] {Item[i]}");
+                        }
+                        i++;
+                    }
                 }
                 Console.WriteLine($"----------------------------");
+                if (Peep.InventorySpace > 0)
+                    Console.WriteLine($"Press Up or Down to select item");
                 Console.WriteLine("Press Escape to exit.");
                 var k = Console.ReadKey(true);
+                if(SelectedItem > Peep.InventorySpace)
+                {
+                    SelectedItem = Peep.InventorySpace;
+                }
                 if (k.Key == ConsoleKey.Escape)
                 {
                     Console.Clear();
                     Game();
+                }
+                if (k.Key == ConsoleKey.OemPlus || k.Key == ConsoleKey.Add)
+                { 
+
+                    Additem(12);
+                }
+                if (k.Key == ConsoleKey.OemMinus || k.Key == ConsoleKey.Subtract)
+                {
+
+                    RemoveItem();
+                }
+                if (k.Key == ConsoleKey.UpArrow)
+                {
+
+                    if (SelectedItem > 0)
+                    {
+                        SelectedItem--;
+                    }
+                }
+                if (k.Key == ConsoleKey.DownArrow)
+                {
+                    if (SelectedItem < Peep.InventorySpace - 1)
+                    {
+                        SelectedItem++;
+                    }
                 }
 
             }
@@ -813,6 +895,7 @@ namespace RDRPG
             var k = Console.ReadKey(true);
             if(k.Key == ConsoleKey.T)
             {
+                SelectedItem = 0;
                 Inventory();
             }
             if (Peep.upgPoints > 0)
