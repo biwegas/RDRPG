@@ -32,6 +32,8 @@ namespace RDRPG
             public string Name;
             public int MimicFight;
             public int AddHitpoints;
+            public int InventorySpace;
+            public int MaxInventorySpace;
         }
         public struct Enemy
         {
@@ -52,13 +54,6 @@ namespace RDRPG
         public static double GetRandomNumber(double minimum, double maximum)
         {
             return rnd.NextDouble() * (maximum - minimum) + minimum;
-        }
-        public static void ClearCurrentConsoleLine()
-        {
-            int currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, currentLineCursor - 1);
         }
         public static void Menu()
         {
@@ -172,6 +167,8 @@ namespace RDRPG
                                 Peep.accPoints = 5;
                                 Peep.attackPoints = 5;
                                 Peep.Class = 1;
+                                Peep.InventorySpace = 0;
+                                Peep.MaxInventorySpace = 10;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Warrior";
                                 Peep.goldAmount = 0;
@@ -208,6 +205,8 @@ namespace RDRPG
                                 Peep.intPoints = 4;
                                 Peep.accPoints = 10;
                                 Peep.attackPoints = 7;
+                                Peep.InventorySpace = 0;
+                                Peep.MaxInventorySpace = 10;
                                 Peep.Class = 2;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Rogue";
@@ -246,6 +245,8 @@ namespace RDRPG
                                 Peep.intPoints = 8;
                                 Peep.accPoints = 10;
                                 Peep.attackPoints = 5;
+                                Peep.InventorySpace = 0;
+                                Peep.MaxInventorySpace = 10;
                                 Peep.Class = 3;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Monk";
@@ -280,6 +281,8 @@ namespace RDRPG
                                 Peep.intPoints = 4;
                                 Peep.accPoints = 10;
                                 Peep.attackPoints = 7;
+                                Peep.InventorySpace = 0;
+                                Peep.MaxInventorySpace = 10;
                                 Peep.Class = 9;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Cheat";
@@ -752,6 +755,34 @@ namespace RDRPG
                 }
             }
         }
+        public static void Inventory()
+        {
+            while(true)
+            {
+                Console.Clear();
+                Console.WriteLine($"{Peep.Name}'s Inventory");
+                Console.WriteLine($"Inventory space {Peep.InventorySpace}/{Peep.MaxInventorySpace}");
+                Console.WriteLine($"-----------ITEMS------------");
+                if(Peep.InventorySpace == 0)
+                {
+                    Console.WriteLine("Empty");
+                }
+                else
+                {
+                    Console.WriteLine("Something");
+                }
+                Console.WriteLine($"----------------------------");
+                Console.WriteLine("Press Escape to exit.");
+                var k = Console.ReadKey(true);
+                if (k.Key == ConsoleKey.Escape)
+                {
+                    Console.Clear();
+                    Game();
+                }
+
+            }
+            
+        }
         public static void Game()
         {
             Console.WriteLine($"----------------------------");
@@ -764,6 +795,7 @@ namespace RDRPG
             Console.WriteLine($"Total tiles travelled: {Peep.tilesTraveled}");
             Console.WriteLine($"----------------------------");
             Console.WriteLine("Press R to roll the dice");
+            Console.WriteLine("Press T to access inventory");
             Console.WriteLine("Press Escape to go to menu");
             if(Peep.Level >= 20)
             {
@@ -779,6 +811,10 @@ namespace RDRPG
             }
             Console.WriteLine($"----------------------------");
             var k = Console.ReadKey(true);
+            if(k.Key == ConsoleKey.T)
+            {
+                Inventory();
+            }
             if (Peep.upgPoints > 0)
             {
                 if(k.Key == ConsoleKey.E)
