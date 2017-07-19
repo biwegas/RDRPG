@@ -767,11 +767,9 @@ namespace RDRPG
             }
             else
             {
-                Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Inventory is full");
                 System.Threading.Thread.Sleep(500);
-                Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
         }
