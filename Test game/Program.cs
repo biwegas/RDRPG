@@ -8,7 +8,7 @@ namespace RDRPG
 {
     class Program
     {
-        public static string GameVer = "0.0.1";
+        public static string GameVer = "0.0.2-WiP";
         public static string GameName = "Rolling dice RPG";
         static Person Peep = new Person();
         static Enemy BadGuy = new Enemy();
@@ -668,21 +668,18 @@ namespace RDRPG
             {
                 if (Peep.HitPoints < Peep.maxHitPoints)
                 {
-                    double IntPoints = Peep.intPoints;
-                    double HealFor = Math.Round(IntPoints);
-                    Peep.HitPoints = Peep.HitPoints + Convert.ToInt32(HealFor);
-                    Console.WriteLine($"You rolled equal dices and healed for {HealFor}");
+                    Peep.HitPoints = Peep.HitPoints + Convert.ToInt32(Peep.intPoints);
+                    Console.WriteLine($"You rolled equal dices and healed for {Peep.intPoints}");
                     System.Threading.Thread.Sleep(400);
+                    Peep.EqualDices = 0;
                 }
             }
             else
             {
                 if (Peep.HitPoints < Peep.maxHitPoints)
                 {
-                    double IntPointsHalf = Peep.intPoints / 2;
-                    double HealFor = Math.Round(IntPointsHalf);
-                    Peep.HitPoints = Peep.HitPoints + Convert.ToInt32(HealFor);
-                    Console.WriteLine($"You didn't encountered anything and healed for {HealFor}");
+                    Peep.HitPoints = Peep.HitPoints + Convert.ToInt32(Peep.intPoints / 2);
+                    Console.WriteLine($"You didn't encountered anything and healed for {Convert.ToInt32(Peep.intPoints / 2)}");
                     System.Threading.Thread.Sleep(400);
                 }
             }
