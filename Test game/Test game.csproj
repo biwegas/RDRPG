@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7ADEA3AF-C014-4BC2-BE7B-F13ED686C8D0}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Test_game</RootNamespace>
-    <AssemblyName>Test game</AssemblyName>
+    <RootNamespace>RDRPG</RootNamespace>
+    <AssemblyName>Rolling Dice RPG</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
