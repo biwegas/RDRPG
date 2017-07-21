@@ -888,6 +888,11 @@ namespace RDRPG
                     Console.WriteLine($"{Peep.ItemName[Peep.SelectedItem]} heals for 20 HP.");
                     Console.WriteLine("It's one time use item.");
                 }
+                else if(Peep.ItemN[Peep.SelectedItem] == 2)
+                {
+                    Console.WriteLine($"{Peep.ItemName[Peep.SelectedItem]} gives random amount of permanent Intelligence points");
+                    Console.WriteLine("It's one time use item.");
+                }
                 Console.WriteLine($"----------------------------");
                 if (Peep.ItemType[Peep.SelectedItem] == 1 || Peep.ItemType[Peep.SelectedItem] == 2)
                 {
@@ -908,6 +913,17 @@ namespace RDRPG
                     if(Peep.ItemN[Peep.SelectedItem] == 1)
                     {
                         HealingPotion();
+                    }
+                    else if (Peep.ItemN[Peep.SelectedItem] == 2)
+                    {
+                        int IntGainz = rnd.Next(2, 6);
+                        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                        Console.WriteLine($"You got {IntGainz} intelligence points.");
+                        System.Threading.Thread.Sleep(400);
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Peep.intPoints = Peep.intPoints + IntGainz;
+                        RemoveItem();
+                        Inventory();
                     }
                     else
                     {
