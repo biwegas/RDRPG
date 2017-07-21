@@ -17,6 +17,8 @@ namespace RDRPG
         public struct ItemP
         {
             public int ItemID;
+            public int ItemType;
+            public int ItemName;
         }
         public struct Person
         {
@@ -783,32 +785,24 @@ namespace RDRPG
             }
             Peep.InventorySpace--;
         }
-        public static void InventoryItem()
+        public static void InventoryItem(int i)
         {
-            for (int i = 0; i < Peep.InventorySpace; i++)
+            
+            if (Peep.SelectedItem == i)
             {
-                if (Peep.ItemN[i] == 0)
-                {
-                    Console.Write("");
-                }
-                else
-                {
-                    if (Peep.SelectedItem == i)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Magenta;
-                        Console.Write($"[{i + 1}] ");
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                        Console.Write($"{Peep.ItemN[i]} \n");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[{i + 1}] {Peep.ItemN[i]}");
-                    }
-                }
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write($"[{i + 1}] ");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write($"{Peep.ItemN[i]} \n");
+            }
+            else
+            {
+                Console.WriteLine($"[{i + 1}] {Peep.ItemN[i]}");
             }
         }
         public static void Inventory()
         {
+            Item.ItemID = 10;
             while (true)
             {
                 Console.Clear();
@@ -823,7 +817,17 @@ namespace RDRPG
                 }
                 else
                 {
-                    InventoryItem();
+                    for (int i = 0; i < Peep.InventorySpace; i++)
+                    {
+                        if (Peep.ItemN[i] == 0)
+                        {
+                            Console.Write("");
+                        }
+                        else
+                        {
+                            InventoryItem(i);
+                        }
+                    }
                 }
                 Console.WriteLine($"----------------------------");
                 if (Peep.InventorySpace > 0)
@@ -845,7 +849,7 @@ namespace RDRPG
                 if (k.Key == ConsoleKey.UpArrow)
                 {
 
-                    if (Peep.SelectedItem > 0 && Peep.InventorySpace > 0)
+                    if(Peep.SelectedItem > 0 && Peep.InventorySpace > 0)
                     {
                         Peep.SelectedItem--;
                     }
@@ -863,7 +867,10 @@ namespace RDRPG
                 }
                 if(k.Key == ConsoleKey.Subtract)
                 {
-                    RemoveItem();
+                    if (Peep.InventorySpace > 0)
+                    {
+                        RemoveItem();
+                    }
                 }
             }
             
