@@ -10,13 +10,14 @@ namespace RDRPG
     {
         public static string GameVer = "0.0.2-WiP";
         public static string GameName = "Rolling dice RPG";
-        public static int ItemID = 0;
-        public static int MaxInventorySpace = 10;
-        public static int SelectedItem = 0;
-        static int[] Item = new int[MaxInventorySpace];
         static Person Peep = new Person();
         static Enemy BadGuy = new Enemy();
         static Random rnd = new Random();
+        static ItemP Item = new ItemP();
+        public struct ItemP
+        {
+            public int ItemID;
+        }
         public struct Person
         {
             public int HitPoints, maxHitPoints;
@@ -37,6 +38,9 @@ namespace RDRPG
             public int MimicFight;
             public int AddHitpoints;
             public int InventorySpace;
+            public int SelectedItem;
+            public int MaxInventorySpace;
+            public int[] ItemN;
         }
         public struct Enemy
         {
@@ -53,10 +57,8 @@ namespace RDRPG
             Console.WriteLine("Welcome to the " + GameName);
             System.Threading.Thread.Sleep(2000);
             Console.Clear();
-            for(int i = 0; i < 10; i++)
-            {
-                Item[i] = 0;
-            }
+            Peep.MaxInventorySpace = 10;
+            Peep.ItemN = new int[Peep.MaxInventorySpace];
         }
         public static double GetRandomNumber(double minimum, double maximum)
         {
@@ -758,47 +760,62 @@ namespace RDRPG
                 }
             }
         }
-        public static void Additem(int ItemID)
+        public static void Additem()
         {
-            if (Peep.InventorySpace < MaxInventorySpace)
+            if (Peep.InventorySpace < Peep.MaxInventorySpace)
             {
-                Item[Peep.InventorySpace] = ItemID;
+                Peep.ItemN[Peep.InventorySpace] = Item.ItemID;
                 Peep.InventorySpace++;
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Inventory is full");
-                System.Threading.Thread.Sleep(500);
+                System.Threading.Thread.Sleep(400);
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
         }
         public static void RemoveItem()
         {
-            if (Peep.InventorySpace > 0)
+            for(int i = Peep.SelectedItem; i < Peep.InventorySpace - 1; i++)
             {
-                if (SelectedItem == MaxInventorySpace)
+                Peep.ItemN[i] = Peep.ItemN[i + 1];
+            }
+            Peep.InventorySpace--;
+        }
+        public static void InventoryItem()
+        {
+            for (int i = 0; i < Peep.InventorySpace; i++)
+            {
+                if (Peep.ItemN[i] == 0)
                 {
-                    Item[SelectedItem] = 0;
-                    Peep.InventorySpace--;
+                    Console.Write("");
                 }
                 else
                 {
-                    Item[SelectedItem] = Item[SelectedItem + 1];
-                    Peep.InventorySpace--;
+                    if (Peep.SelectedItem == i)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.Write($"[{i + 1}] ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.Write($"{Peep.ItemN[i]} \n");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[{i + 1}] {Peep.ItemN[i]}");
+                    }
                 }
             }
         }
         public static void Inventory()
         {
-            int SelectedItem = 0;
             while (true)
             {
                 Console.Clear();
                 Console.WriteLine($"{Peep.Name}'s Inventory");
-                Console.WriteLine($"Inventory space {Peep.InventorySpace}/{MaxInventorySpace}");
+                Console.WriteLine($"Inventory space {Peep.InventorySpace}/{Peep.MaxInventorySpace}");
                 if(Peep.InventorySpace > 0)
-                    Console.WriteLine($"You selected [{SelectedItem + 1}] item");
+                    Console.WriteLine($"You selected [{Peep.SelectedItem + 1}] item");
                 Console.WriteLine($"-----------ITEMS------------");
                 if(Peep.InventorySpace == 0)
                 {
@@ -806,29 +823,13 @@ namespace RDRPG
                 }
                 else
                 {
-                    for(int i = 0; i < MaxInventorySpace - 1; i++)
-                    {
-
-                        if (Item[i] == 0)
-                        {
-                            Console.Write("");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"[{i + 1}] {Item[i]}");
-                        }
-                        i++;
-                    }
+                    InventoryItem();
                 }
                 Console.WriteLine($"----------------------------");
                 if (Peep.InventorySpace > 0)
                     Console.WriteLine($"Press Up or Down to select item");
                 Console.WriteLine("Press Escape to exit.");
                 var k = Console.ReadKey(true);
-                if(SelectedItem > Peep.InventorySpace)
-                {
-                    SelectedItem = Peep.InventorySpace;
-                }
                 if (k.Key == ConsoleKey.Escape)
                 {
                     Console.Clear();
@@ -836,30 +837,34 @@ namespace RDRPG
                 }
                 if (k.Key == ConsoleKey.OemPlus || k.Key == ConsoleKey.Add)
                 { 
-
-                    Additem(12);
                 }
                 if (k.Key == ConsoleKey.OemMinus || k.Key == ConsoleKey.Subtract)
                 {
 
-                    RemoveItem();
                 }
                 if (k.Key == ConsoleKey.UpArrow)
                 {
 
-                    if (SelectedItem > 0)
+                    if (Peep.SelectedItem > 0 && Peep.InventorySpace > 0)
                     {
-                        SelectedItem--;
+                        Peep.SelectedItem--;
                     }
                 }
                 if (k.Key == ConsoleKey.DownArrow)
                 {
-                    if (SelectedItem < Peep.InventorySpace - 1)
+                    if (Peep.SelectedItem + 1 < Peep.InventorySpace)
                     {
-                        SelectedItem++;
+                        Peep.SelectedItem++;
                     }
                 }
-
+                if(k.Key == ConsoleKey.Add)
+                {
+                    Additem();
+                }
+                if(k.Key == ConsoleKey.Subtract)
+                {
+                    RemoveItem();
+                }
             }
             
         }
@@ -881,7 +886,7 @@ namespace RDRPG
             {
                 Console.WriteLine("Press Q if you want to fight the Boss");
             }
-            if (Peep.tilesTraveled % 100 < 6 && Convert.ToBoolean(Peep.tilesTraveled != 0))
+            if (Peep.tilesTraveled % 100 < 6 & Peep.tilesTraveled != 0)
             {
                 Console.WriteLine("Press W to access shop");
             }
@@ -893,7 +898,7 @@ namespace RDRPG
             var k = Console.ReadKey(true);
             if(k.Key == ConsoleKey.T)
             {
-                SelectedItem = 0;
+                Peep.SelectedItem = 0;
                 Inventory();
             }
             if (Peep.upgPoints > 0)
