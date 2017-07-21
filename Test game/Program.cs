@@ -183,7 +183,7 @@ namespace RDRPG
                                 Peep.className = "Warrior";
                                 Peep.goldAmount = 0;
                                 Peep.xpAmount = 0;
-                                Peep.maxXpAmount = 75;
+                                Peep.maxXpAmount = 35;
                                 Peep.Level = 1;
                                 Console.Clear();
                                 Console.WriteLine("Good Luck!");
@@ -784,6 +784,11 @@ namespace RDRPG
                 Peep.ItemN[i] = Peep.ItemN[i + 1];
             }
             Peep.InventorySpace--;
+            Peep.SelectedItem = Peep.InventorySpace - 1;
+            if(Peep.SelectedItem == -1)
+            {
+                Peep.SelectedItem = 0;
+            }
         }
         public static void InventoryItem(int i)
         {
@@ -802,9 +807,9 @@ namespace RDRPG
         }
         public static void Inventory()
         {
-            Item.ItemID = 10;
             while (true)
             {
+                Item.ItemID = rnd.Next(1, 5);
                 Console.Clear();
                 Console.WriteLine($"{Peep.Name}'s Inventory");
                 Console.WriteLine($"Inventory space {Peep.InventorySpace}/{Peep.MaxInventorySpace}");
@@ -849,10 +854,11 @@ namespace RDRPG
                 if (k.Key == ConsoleKey.UpArrow)
                 {
 
-                    if(Peep.SelectedItem > 0 && Peep.InventorySpace > 0)
+                    if (Peep.SelectedItem > 0 && Peep.InventorySpace > 0)
                     {
                         Peep.SelectedItem--;
                     }
+                    else Peep.SelectedItem = 9;
                 }
                 if (k.Key == ConsoleKey.DownArrow)
                 {
@@ -860,6 +866,7 @@ namespace RDRPG
                     {
                         Peep.SelectedItem++;
                     }
+                    else Peep.SelectedItem = 0;
                 }
                 if(k.Key == ConsoleKey.Add)
                 {
