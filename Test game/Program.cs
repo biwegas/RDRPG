@@ -857,12 +857,37 @@ namespace RDRPG
                 }
             }
         }
+        public static void HealingPotion()
+        {
+            if (Peep.HitPoints < Peep.maxHitPoints)
+            {
+                Peep.HitPoints = Peep.HitPoints + 20;
+                if (Peep.HitPoints > Peep.maxHitPoints)
+                {
+                    Peep.HitPoints = Peep.maxHitPoints;
+                }
+                RemoveItem();
+                Inventory();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Your HP is full.");
+                System.Threading.Thread.Sleep(400);
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
         public static void ISelected()
         {
             while (true)
             {
                 Console.Clear();
                 Console.WriteLine($"You selected {Peep.ItemName[Peep.SelectedItem]}");
+                if(Peep.ItemN[Peep.SelectedItem] == 1)
+                {
+                    Console.WriteLine($"{Peep.ItemName[Peep.SelectedItem]} heals for 20 HP.");
+                    Console.WriteLine("It's one time use item.");
+                }
                 Console.WriteLine($"----------------------------");
                 if (Peep.ItemType[Peep.SelectedItem] == 1 || Peep.ItemType[Peep.SelectedItem] == 2)
                 {
@@ -880,8 +905,15 @@ namespace RDRPG
                 }
                 if (k.Key == ConsoleKey.Enter)
                 {
-                    RemoveItem();
-                    Inventory();
+                    if(Peep.ItemN[Peep.SelectedItem] == 1)
+                    {
+                        HealingPotion();
+                    }
+                    else
+                    {
+                        RemoveItem();
+                        Inventory();
+                    }
                 }
             }
         }
