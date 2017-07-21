@@ -18,7 +18,7 @@ namespace RDRPG
         {
             public int ItemID;
             public int ItemType;
-            public int ItemName;
+            public string[] ItemName;
         }
         public struct Person
         {
@@ -61,6 +61,7 @@ namespace RDRPG
             Console.Clear();
             Peep.MaxInventorySpace = 10;
             Peep.ItemN = new int[Peep.MaxInventorySpace];
+            Item.ItemName = new string[20];
         }
         public static double GetRandomNumber(double minimum, double maximum)
         {
@@ -784,32 +785,68 @@ namespace RDRPG
                 Peep.ItemN[i] = Peep.ItemN[i + 1];
             }
             Peep.InventorySpace--;
-            Peep.SelectedItem = Peep.InventorySpace - 1;
-            if(Peep.SelectedItem == -1)
+            if (Peep.SelectedItem > Peep.InventorySpace - 1)
+            {
+                Peep.SelectedItem = Peep.InventorySpace - 1;
+            }
+            if (Peep.SelectedItem == -1)
             {
                 Peep.SelectedItem = 0;
             }
         }
-        public static void InventoryItem(int i)
+        public static void InventoryItem()
         {
-            
-            if (Peep.SelectedItem == i)
+            for (int i = 0; i < Peep.InventorySpace; i++)
             {
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.Write($"[{i + 1}] ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.Write($"{Peep.ItemN[i]} \n");
-            }
-            else
-            {
-                Console.WriteLine($"[{i + 1}] {Peep.ItemN[i]}");
+                if (Peep.ItemN[i] == 0)
+                {
+                    Console.Write("");
+                }
+                else
+                {
+                    if (Item.ItemID == 1) //healing potion
+                    {
+                        Item.ItemName[i] = "Healing potion";
+                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                    }
+                    if (Item.ItemID == 2) //intelligence book
+                    {
+                        Item.ItemName[i] = "Book of INT";
+                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                    }
+                    if (Item.ItemID == 3) //Helm
+                    {
+                        Item.ItemName[i] = "Wooden cap";
+                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                    }
+                    if (Item.ItemID == 4) //Shield
+                    {
+                        Item.ItemName[i] = "Wooden shield";
+                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                    }
+                    if (Item.ItemID == 5) //Body
+                    {
+                        Item.ItemName[i] = "Wooden body";
+                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                    }
+                    if (Item.ItemID == 6) //Legs
+                    {
+                        Item.ItemName[i] = "Wooden legs";
+                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                    }
+                    if (Item.ItemID == 7) //Weapon
+                    {
+                        Item.ItemName[i] = "Wooden sword";
+                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                    }
+                }
             }
         }
         public static void Inventory()
         {
             while (true)
             {
-                Item.ItemID = rnd.Next(1, 5);
+                Item.ItemID = rnd.Next(1, 7);
                 Console.Clear();
                 Console.WriteLine($"{Peep.Name}'s Inventory");
                 Console.WriteLine($"Inventory space {Peep.InventorySpace}/{Peep.MaxInventorySpace}");
@@ -822,17 +859,8 @@ namespace RDRPG
                 }
                 else
                 {
-                    for (int i = 0; i < Peep.InventorySpace; i++)
-                    {
-                        if (Peep.ItemN[i] == 0)
-                        {
-                            Console.Write("");
-                        }
-                        else
-                        {
-                            InventoryItem(i);
-                        }
-                    }
+                    InventoryItem();
+                
                 }
                 Console.WriteLine($"----------------------------");
                 if (Peep.InventorySpace > 0)
@@ -844,13 +872,6 @@ namespace RDRPG
                     Console.Clear();
                     Game();
                 }
-                if (k.Key == ConsoleKey.OemPlus || k.Key == ConsoleKey.Add)
-                { 
-                }
-                if (k.Key == ConsoleKey.OemMinus || k.Key == ConsoleKey.Subtract)
-                {
-
-                }
                 if (k.Key == ConsoleKey.UpArrow)
                 {
 
@@ -858,7 +879,7 @@ namespace RDRPG
                     {
                         Peep.SelectedItem--;
                     }
-                    else Peep.SelectedItem = 9;
+                    else Peep.SelectedItem = Peep.InventorySpace - 1;
                 }
                 if (k.Key == ConsoleKey.DownArrow)
                 {
@@ -868,11 +889,11 @@ namespace RDRPG
                     }
                     else Peep.SelectedItem = 0;
                 }
-                if(k.Key == ConsoleKey.Add)
+                if (k.Key == ConsoleKey.Add)
                 {
                     Additem();
                 }
-                if(k.Key == ConsoleKey.Subtract)
+                if (k.Key == ConsoleKey.Subtract)
                 {
                     if (Peep.InventorySpace > 0)
                     {
