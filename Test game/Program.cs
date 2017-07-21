@@ -10,16 +10,10 @@ namespace RDRPG
     {
         public static string GameVer = "0.0.2-WiP";
         public static string GameName = "Rolling dice RPG";
+        public static int itemID;
         static Person Peep = new Person();
         static Enemy BadGuy = new Enemy();
         static Random rnd = new Random();
-        static ItemP Item = new ItemP();
-        public struct ItemP
-        {
-            public int ItemID;
-            public int ItemType;
-            public string[] ItemName;
-        }
         public struct Person
         {
             public int HitPoints, maxHitPoints;
@@ -43,6 +37,9 @@ namespace RDRPG
             public int SelectedItem;
             public int MaxInventorySpace;
             public int[] ItemN;
+            public string[] ItemName;
+            public int[] ItemType;
+
         }
         public struct Enemy
         {
@@ -61,7 +58,8 @@ namespace RDRPG
             Console.Clear();
             Peep.MaxInventorySpace = 10;
             Peep.ItemN = new int[Peep.MaxInventorySpace];
-            Item.ItemName = new string[20];
+            Peep.ItemName = new string[20];
+            Peep.ItemType = new int[20];
         }
         public static double GetRandomNumber(double minimum, double maximum)
         {
@@ -767,7 +765,7 @@ namespace RDRPG
         {
             if (Peep.InventorySpace < Peep.MaxInventorySpace)
             {
-                Peep.ItemN[Peep.InventorySpace] = Item.ItemID;
+                Peep.ItemN[Peep.InventorySpace] = itemID;
                 Peep.InventorySpace++;
             }
             else
@@ -804,41 +802,86 @@ namespace RDRPG
                 }
                 else
                 {
-                    if (Item.ItemID == 1) //healing potion
+                    if(Peep.SelectedItem == i)
                     {
-                        Item.ItemName[i] = "Healing potion";
-                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                        Console.Write($"[{i + 1}] ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
                     }
-                    if (Item.ItemID == 2) //intelligence book
+                    else
                     {
-                        Item.ItemName[i] = "Book of INT";
-                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                        Console.Write($"[{i + 1}] ");
                     }
-                    if (Item.ItemID == 3) //Helm
+                    if (Peep.ItemN[i] == 1) //healing potion
                     {
-                        Item.ItemName[i] = "Wooden cap";
-                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                        Peep.ItemName[i] = "Healing potion";
+                        Peep.ItemType[i] = 1;
+                        Console.WriteLine($"{Peep.ItemName[i]}");
                     }
-                    if (Item.ItemID == 4) //Shield
+                    if (Peep.ItemN[i] == 2) //intelligence book
                     {
-                        Item.ItemName[i] = "Wooden shield";
-                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                        Peep.ItemName[i] = "Book of INT";
+                        Peep.ItemType[i] = 2;
+                        Console.WriteLine($"{Peep.ItemName[i]}");
                     }
-                    if (Item.ItemID == 5) //Body
+                    if (Peep.ItemN[i] == 3) //Helm
                     {
-                        Item.ItemName[i] = "Wooden body";
-                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                        Peep.ItemName[i] = "Wooden cap";
+                        Peep.ItemType[i] = 3;
+                        Console.WriteLine($"{Peep.ItemName[i]}");
                     }
-                    if (Item.ItemID == 6) //Legs
+                    if (Peep.ItemN[i] == 4) //Shield
                     {
-                        Item.ItemName[i] = "Wooden legs";
-                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                        Peep.ItemName[i] = "Wooden shield";
+                        Peep.ItemType[i] = 4;
+                        Console.WriteLine($"{Peep.ItemName[i]}");
                     }
-                    if (Item.ItemID == 7) //Weapon
+                    if (Peep.ItemN[i] == 5) //Body
                     {
-                        Item.ItemName[i] = "Wooden sword";
-                        Console.WriteLine($"[{i + 1}] {Item.ItemName[i]}");
+                        Peep.ItemName[i] = "Wooden body";
+                        Peep.ItemType[i] = 5;
+                        Console.WriteLine($"{Peep.ItemName[i]}");
                     }
+                    if (Peep.ItemN[i] == 6) //Legs
+                    {
+                        Peep.ItemName[i] = "Wooden legs";
+                        Peep.ItemType[i] = 6;
+                        Console.WriteLine($"{Peep.ItemName[i]}");
+                    }
+                    if (Peep.ItemN[i] == 7) //Weapon
+                    {
+                        Peep.ItemName[i] = "Wooden sword";
+                        Peep.ItemType[i] = 7;
+                        Console.WriteLine($"{Peep.ItemName[i]}");
+                    }
+                }
+            }
+        }
+        public static void ISelected()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine($"You selected {Peep.ItemName[Peep.SelectedItem]}");
+                Console.WriteLine($"----------------------------");
+                if (Peep.ItemType[Peep.SelectedItem] == 1 || Peep.ItemType[Peep.SelectedItem] == 2)
+                {
+                    Console.WriteLine($"Press Enter to use item");
+                }
+                else if (Peep.ItemType[Peep.SelectedItem] > 2 || Peep.ItemType[Peep.SelectedItem] < 8)
+                {
+                    Console.WriteLine($"Press Enter to equip item");
+                }
+                Console.WriteLine($"Press Escape to go back to inventory");
+                var k = Console.ReadKey();
+                if(k.Key == ConsoleKey.Escape)
+                {
+                    Inventory();
+                }
+                if (k.Key == ConsoleKey.Enter)
+                {
+                    RemoveItem();
+                    Inventory();
                 }
             }
         }
@@ -846,7 +889,7 @@ namespace RDRPG
         {
             while (true)
             {
-                Item.ItemID = rnd.Next(1, 7);
+                itemID = rnd.Next(1, 7);
                 Console.Clear();
                 Console.WriteLine($"{Peep.Name}'s Inventory");
                 Console.WriteLine($"Inventory space {Peep.InventorySpace}/{Peep.MaxInventorySpace}");
@@ -860,11 +903,13 @@ namespace RDRPG
                 else
                 {
                     InventoryItem();
-                
                 }
                 Console.WriteLine($"----------------------------");
                 if (Peep.InventorySpace > 0)
+                {
                     Console.WriteLine($"Press Up or Down to select item");
+                    Console.WriteLine($"Press Enter to access selected item");
+                }
                 Console.WriteLine("Press Escape to exit.");
                 var k = Console.ReadKey(true);
                 if (k.Key == ConsoleKey.Escape)
@@ -900,8 +945,11 @@ namespace RDRPG
                         RemoveItem();
                     }
                 }
-            }
-            
+                if (k.Key == ConsoleKey.Enter)
+                {
+                    ISelected();
+                }
+            } 
         }
         public static void Game()
         {
