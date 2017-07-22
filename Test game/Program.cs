@@ -39,7 +39,16 @@ namespace RDRPG
             public int[] ItemN;
             public string[] ItemName;
             public int[] ItemType;
-
+            public int WearH;
+            public int WearB;
+            public int WearL;
+            public int WearS;
+            public int WearW;
+            public string HelmW;
+            public string BodyW;
+            public string LegsW;
+            public string ShieldW;
+            public string WeaponW;
         }
         public struct Enemy
         {
@@ -169,6 +178,8 @@ namespace RDRPG
                             k = Console.ReadKey(true);
                             if (k.Key == ConsoleKey.Enter)
                             {
+                                Peep.WearH = Peep.WearB = Peep.WearL = Peep.WearS = Peep.WearW = 0;
+                                Peep.HelmW = Peep.BodyW = Peep.LegsW = Peep.ShieldW = Peep.WeaponW = "";
                                 Peep.HitPoints = Peep.maxHitPoints = 50;
                                 Peep.AddHitpoints = 16;
                                 Peep.tilesTraveled = 0;
@@ -207,6 +218,8 @@ namespace RDRPG
                             k = Console.ReadKey(true);
                             if (k.Key == ConsoleKey.Enter)
                             {
+                                Peep.WearH = Peep.WearB = Peep.WearL = Peep.WearS = Peep.WearW = 0;
+                                Peep.HelmW = Peep.BodyW = Peep.LegsW = Peep.ShieldW = Peep.WeaponW = "";
                                 Peep.HitPoints = Peep.maxHitPoints = 40;
                                 Peep.AddHitpoints = 16;
                                 Peep.tilesTraveled = 0;
@@ -246,6 +259,8 @@ namespace RDRPG
                             k = Console.ReadKey(true);
                             if (k.Key == ConsoleKey.Enter)
                             {
+                                Peep.WearH = Peep.WearB = Peep.WearL = Peep.WearS = Peep.WearW = 0;
+                                Peep.HelmW = Peep.BodyW = Peep.LegsW = Peep.ShieldW = Peep.WeaponW = "";
                                 Peep.HitPoints = Peep.maxHitPoints = 35;
                                 Peep.AddHitpoints = 16;
                                 Peep.tilesTraveled = 0;
@@ -281,6 +296,8 @@ namespace RDRPG
                             k = Console.ReadKey(true);
                             if (k.Key == ConsoleKey.Enter)
                             {
+                                Peep.WearH = Peep.WearB = Peep.WearL = Peep.WearS = Peep.WearW = 0;
+                                Peep.HelmW = Peep.BodyW = Peep.LegsW = Peep.ShieldW = Peep.WeaponW = "";
                                 Peep.HitPoints = Peep.maxHitPoints = 40;
                                 Peep.AddHitpoints = 16;
                                 Peep.tilesTraveled = 100;
@@ -830,21 +847,21 @@ namespace RDRPG
                         Peep.ItemType[i] = 3;
                         Console.WriteLine($"{Peep.ItemName[i]}");
                     }
-                    if (Peep.ItemN[i] == 4) //Shield
+                    if (Peep.ItemN[i] == 4) //Body
                     {
-                        Peep.ItemName[i] = "Wooden shield";
+                        Peep.ItemName[i] = "Wooden trunk";
                         Peep.ItemType[i] = 4;
                         Console.WriteLine($"{Peep.ItemName[i]}");
                     }
-                    if (Peep.ItemN[i] == 5) //Body
+                    if (Peep.ItemN[i] == 5) //Legs
                     {
-                        Peep.ItemName[i] = "Wooden body";
+                        Peep.ItemName[i] = "Wooden legs";
                         Peep.ItemType[i] = 5;
                         Console.WriteLine($"{Peep.ItemName[i]}");
                     }
-                    if (Peep.ItemN[i] == 6) //Legs
+                    if (Peep.ItemN[i] == 6) //Shield
                     {
-                        Peep.ItemName[i] = "Wooden legs";
+                        Peep.ItemName[i] = "Wooden shield";
                         Peep.ItemType[i] = 6;
                         Console.WriteLine($"{Peep.ItemName[i]}");
                     }
@@ -877,6 +894,122 @@ namespace RDRPG
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
         }
+        public static void IntelligenceBook()
+        {
+            int IntGainz = rnd.Next(2, 6);
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine($"You got {IntGainz} intelligence points.");
+            System.Threading.Thread.Sleep(400);
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Peep.intPoints = Peep.intPoints + IntGainz;
+            RemoveItem();
+            Inventory();
+        }
+        public static void EquipHelm()
+        {
+            if (Peep.WearH == 0)
+            {
+                if(Peep.ItemName[Peep.SelectedItem] == "Wooden cap")
+                {
+                    Peep.HelmW = "Wooden cap";
+                    Peep.defPoints = Peep.defPoints + 3;
+                }
+                Peep.WearH = 1;
+                RemoveItem();
+                Inventory();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("You already have shield equiped");
+                System.Threading.Thread.Sleep(400);
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
+        public static void EquipBody()
+        {
+            if (Peep.WearB == 0)
+            {
+                if (Peep.ItemName[Peep.SelectedItem] == "Wooden trunk")
+                {
+                    Peep.BodyW = "Wooden trunk";
+                    Peep.defPoints = Peep.defPoints + 5;
+                }
+                Peep.WearB = 1;
+                RemoveItem();
+                Inventory();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("You already have body equiped");
+                System.Threading.Thread.Sleep(400);
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
+        public static void EquipLegs()
+        {
+            if (Peep.WearL == 0)
+            {
+                if (Peep.ItemName[Peep.SelectedItem] == "Wooden legs")
+                {
+                    Peep.LegsW = "Wooden legs";
+                    Peep.defPoints = Peep.defPoints + 4;
+                }
+                Peep.WearL = 1;
+                RemoveItem();
+                Inventory();
+            }
+            else
+            {
+                 Console.ForegroundColor = ConsoleColor.Red;
+                 Console.WriteLine("You already have legs equiped");
+                 System.Threading.Thread.Sleep(400);
+                 Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
+        public static void EquipShield()
+        {
+            if (Peep.WearS == 0)
+            {
+                if (Peep.ItemName[Peep.SelectedItem] == "Wooden shield")
+                {
+                    Peep.ShieldW = "Wooden shield";
+                    Peep.defPoints = Peep.defPoints + 4;
+                }
+                Peep.WearS = 1;
+                RemoveItem();
+                Inventory();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("You already have shield equiped");
+                System.Threading.Thread.Sleep(400);
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
+        public static void EquipWeapon()
+        {
+            if (Peep.WearW == 0)
+            {
+                if (Peep.ItemName[Peep.SelectedItem] == "Wooden sword")
+                {
+                    Peep.WeaponW = "Wooden sword";
+                    Peep.attackPoints = Peep.attackPoints + 5;
+                }
+                Peep.WearW = 1;
+                RemoveItem();
+                Inventory();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("You already have weapon equiped");
+                System.Threading.Thread.Sleep(400);
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
         public static void ISelected()
         {
             while (true)
@@ -892,6 +1025,16 @@ namespace RDRPG
                 {
                     Console.WriteLine($"{Peep.ItemName[Peep.SelectedItem]} gives random amount of permanent Intelligence points");
                     Console.WriteLine("It's one time use item.");
+                }
+                else if (Peep.ItemN[Peep.SelectedItem] > 2 && Peep.ItemN[Peep.SelectedItem] < 7)
+                {
+                    Console.WriteLine($"{Peep.ItemName[Peep.SelectedItem]} is made out of wooden material and doesn't seem very sturdy");
+                    Console.WriteLine($"It gives you some defence points if you wear it.");
+                }
+                else if (Peep.ItemN[Peep.SelectedItem] == 7)
+                {
+                    Console.WriteLine($"{Peep.ItemName[Peep.SelectedItem]} is made out of wooden material and doesn't seem very sturdy");
+                    Console.WriteLine($"It gives you some attack points if you wear it.");
                 }
                 Console.WriteLine($"----------------------------");
                 if (Peep.ItemType[Peep.SelectedItem] == 1 || Peep.ItemType[Peep.SelectedItem] == 2)
@@ -916,14 +1059,27 @@ namespace RDRPG
                     }
                     else if (Peep.ItemN[Peep.SelectedItem] == 2)
                     {
-                        int IntGainz = rnd.Next(2, 6);
-                        Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                        Console.WriteLine($"You got {IntGainz} intelligence points.");
-                        System.Threading.Thread.Sleep(400);
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                        Peep.intPoints = Peep.intPoints + IntGainz;
-                        RemoveItem();
-                        Inventory();
+                        IntelligenceBook();
+                    }
+                    else if (Peep.ItemN[Peep.SelectedItem] == 3)
+                    {
+                        EquipHelm();
+                    }
+                    else if (Peep.ItemN[Peep.SelectedItem] == 4)
+                    {
+                        EquipBody();
+                    }
+                    else if (Peep.ItemN[Peep.SelectedItem] == 5)
+                    {
+                        EquipLegs();
+                    }
+                    else if (Peep.ItemN[Peep.SelectedItem] == 6)
+                    {
+                        EquipShield();
+                    }
+                    else if (Peep.ItemN[Peep.SelectedItem] == 7)
+                    {
+                        EquipWeapon();
                     }
                     else
                     {
@@ -933,13 +1089,85 @@ namespace RDRPG
                 }
             }
         }
+        public static void Gear()
+        {
+            while(true)
+            {
+                Console.Clear();
+                Console.WriteLine($"{Peep.Name}'s gear");
+                Console.WriteLine($"----------------------------");
+                Console.Write("Helmet: ");
+                if(Peep.WearH == 0)
+                {
+                    Console.WriteLine("Nothing");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{Peep.HelmW}");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                Console.Write("Body: ");
+                if (Peep.WearB == 0)
+                {
+                    Console.WriteLine("Nothing");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{Peep.BodyW}");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                Console.Write("Legs: ");
+                if (Peep.WearL == 0)
+                {
+                    Console.WriteLine("Nothing");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{Peep.LegsW}");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                Console.Write("Shield: ");
+                if (Peep.WearS == 0)
+                {
+                    Console.WriteLine("Nothing");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{Peep.ShieldW}");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                Console.Write("Weapon: ");
+                if (Peep.WearW == 0)
+                {
+                    Console.WriteLine("Nothing");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{Peep.WeaponW}");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+
+                }
+                Console.WriteLine($"----------------------------");
+                Console.WriteLine("Press Escape to go back to Inventory");
+                var k = Console.ReadKey(true);
+                if (k.Key == ConsoleKey.Escape)
+                {
+                    Inventory();
+                }
+            }
+        }
         public static void Inventory()
         {
             while (true)
             {
-                itemID = rnd.Next(1, 7);
+                itemID = rnd.Next(1, 8);
                 Console.Clear();
-                Console.WriteLine($"{Peep.Name}'s Inventory");
+                Console.WriteLine($"{Peep.Name}'s inventory");
                 Console.WriteLine($"Inventory space {Peep.InventorySpace}/{Peep.MaxInventorySpace}");
                 if(Peep.InventorySpace > 0)
                     Console.WriteLine($"You selected [{Peep.SelectedItem + 1}] item");
@@ -958,12 +1186,17 @@ namespace RDRPG
                     Console.WriteLine($"Press Up or Down to select item");
                     Console.WriteLine($"Press Enter to access selected item");
                 }
+                Console.WriteLine("Press G to access gear menu");
                 Console.WriteLine("Press Escape to exit.");
                 var k = Console.ReadKey(true);
                 if (k.Key == ConsoleKey.Escape)
                 {
                     Console.Clear();
                     Game();
+                }
+                if (k.Key == ConsoleKey.G)
+                {
+                    Gear();
                 }
                 if (k.Key == ConsoleKey.UpArrow)
                 {
@@ -985,13 +1218,6 @@ namespace RDRPG
                 if (k.Key == ConsoleKey.Add)
                 {
                     Additem();
-                }
-                if (k.Key == ConsoleKey.Subtract)
-                {
-                    if (Peep.InventorySpace > 0)
-                    {
-                        RemoveItem();
-                    }
                 }
                 if (k.Key == ConsoleKey.Enter)
                 {
