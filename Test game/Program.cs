@@ -11,6 +11,9 @@ namespace RDRPG
         public static string GameVer = "0.0.2-WiP";
         public static string GameName = "Rolling dice RPG";
         public static int itemID;
+        public static int WasInShop;
+        public static int WasInShopName;
+        public static int ShopItemCount;
         static Person Peep = new Person();
         static Enemy BadGuy = new Enemy();
         static Random rnd = new Random();
@@ -43,6 +46,10 @@ namespace RDRPG
             public string[] Wearable;
             public int[] WearI;
             public string[] WearName;
+            public int[] ItemsIShop;
+            public string[] ShopItemName;
+            public int[] ShopItemType;
+            public int[] ItemPrice;
         }
         public struct Enemy
         {
@@ -63,9 +70,13 @@ namespace RDRPG
             Peep.ItemN = new int[Peep.MaxInventorySpace];
             Peep.ItemName = new string[20];
             Peep.ItemType = new int[20];
+            Peep.ShopItemName = new string[20];
+            Peep.ShopItemType = new int[20];
             Peep.Wearable = new string[10];
+            Peep.ItemPrice = new int[20];
             Peep.WearI = new int[10];
             Peep.WearName = new string[10];
+            Peep.ItemsIShop = new int[10];
             Peep.Wearable[0] = "Helmet";
             Peep.Wearable[1] = "Body";
             Peep.Wearable[2] = "Legs";
@@ -323,7 +334,7 @@ namespace RDRPG
                                 Peep.Class = 9;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Cheat";
-                                Peep.goldAmount = 0;
+                                Peep.goldAmount = 1000;
                                 Peep.xpAmount = 0;
                                 Peep.maxXpAmount = 35;
                                 Peep.Level = 1;
@@ -733,18 +744,78 @@ namespace RDRPG
             Console.WriteLine("Welcome to the final boss fight");
             Console.ReadKey(true);
         }
+        public static void ItemsInShop()
+        {
+            for (int i = 0; i < ShopItemCount; i++)
+            {
+                if (Peep.SelectedItem == i)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write($"[{i + 1}] ");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                else Console.Write($"[{i + 1}] ");
+                Console.WriteLine($"{Peep.ItemsIShop[i]}");
+            }
+        }
         public static void Shop()
         {
+            if (WasInShop == 0)
+            {
+                ShopItemCount = rnd.Next(2, 6);
+                for (int i = 0; i < ShopItemCount; i++)
+                {
+                    Peep.ItemsIShop[i] = rnd.Next(1, 8);
+                }
+            }
+            Peep.SelectedItem = 0;
             while (true)
             {
+                WasInShop = 1;
+                WasInShopName = 1;
                 Console.Clear();
                 Console.WriteLine("Welcome to the shop");
+                if (Peep.goldAmount > 0)
+                {
+                    Console.Write($"You have ");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write($"{Peep.goldAmount}");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine(" gold pieces");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("What are you even doing in shop with no gold. LEAVE IMMEDIATELY!");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                Console.WriteLine($"You selected [{Peep.SelectedItem + 1}] item");
+                Console.WriteLine($"----------------------------");
+                ListOfItems(ShopItemCount, Peep.ItemsIShop, Peep.ShopItemName, Peep.ItemType);
+                Console.WriteLine($"----------------------------");
                 Console.WriteLine("Press Escape to exit.");
                 var k = Console.ReadKey(true);
                 if (k.Key == ConsoleKey.Escape)
                 {
                     Console.Clear();
                     Game();
+                }
+                if (k.Key == ConsoleKey.UpArrow)
+                {
+                    if (Peep.SelectedItem > 0)
+                    {
+                        Peep.SelectedItem--;
+                    }
+                    else Peep.SelectedItem = ShopItemCount - 1;
+
+                }
+                if (k.Key == ConsoleKey.DownArrow)
+                {
+                    if (Peep.SelectedItem + 1 < ShopItemCount)
+                    {
+                        Peep.SelectedItem++;
+                    }
+                    else Peep.SelectedItem = 0;
                 }
             }
         }
@@ -823,11 +894,11 @@ namespace RDRPG
                 Peep.SelectedItem = 0;
             }
         }
-        public static void InventoryItem()
+        public static void ListOfItems(int TheAmountOfItems, int[] ItemIDs, string[] ItemName, int[] ItemType)
         {
-            for (int i = 0; i < Peep.InventorySpace; i++)
+            for (int i = 0; i < TheAmountOfItems; i++)
             {
-                if (Peep.ItemN[i] == 0)
+                if (ItemIDs[i] == 0)
                 {
                     Console.Write("");
                 }
@@ -843,49 +914,84 @@ namespace RDRPG
                     {
                         Console.Write($"[{i + 1}] ");
                     }
-                    if (Peep.ItemN[i] == 1) //healing potion
+                    if (ItemIDs[i] == 1) //healing potion
                     {
-                        Peep.ItemName[i] = "Healing potion";
-                        Peep.ItemType[i] = 1;
-                        Console.WriteLine($"{Peep.ItemName[i]}");
+                        ItemName[i] = "Healing potion";
+                        ItemType[i] = 1;
+                        if(WasInShop == 1)
+                        {
+                            Peep.ItemPrice[i] = 10;
+                        }
+                        Console.Write($"{ItemName[i]}");
                     }
-                    if (Peep.ItemN[i] == 2) //intelligence book
+                    if (ItemIDs[i] == 2) //intelligence book
                     {
-                        Peep.ItemName[i] = "Book of INT";
-                        Peep.ItemType[i] = 2;
-                        Console.WriteLine($"{Peep.ItemName[i]}");
+                        ItemName[i] = "Book of INT";
+                        ItemType[i] = 2;
+                        if (WasInShop == 1)
+                        {
+                            Peep.ItemPrice[i] = 15;
+                        }
+                        Console.Write($"{ItemName[i]}");
                     }
-                    if (Peep.ItemN[i] == 3) //Helm
+                    if (ItemIDs[i] == 3) //Helm
                     {
-                        Peep.ItemName[i] = "Wooden cap";
-                        Peep.ItemType[i] = 3;
-                        Console.WriteLine($"{Peep.ItemName[i]}");
+                        ItemName[i] = "Wooden cap";
+                        ItemType[i] = 3;
+                        if (WasInShop == 1)
+                        {
+                            Peep.ItemPrice[i] = 20;
+                        }
+                        Console.Write($"{ItemName[i]}");
                     }
-                    if (Peep.ItemN[i] == 4) //Body
+                    if (ItemIDs[i] == 4) //Body
                     {
-                        Peep.ItemName[i] = "Wooden trunk";
-                        Peep.ItemType[i] = 4;
-                        Console.WriteLine($"{Peep.ItemName[i]}");
+                        ItemName[i] = "Wooden trunk";
+                        ItemType[i] = 4;
+                        if (WasInShop == 1)
+                        {
+                            Peep.ItemPrice[i] = 30;
+                        }
+                        Console.Write($"{ItemName[i]}");
                     }
-                    if (Peep.ItemN[i] == 5) //Legs
+                    if (ItemIDs[i] == 5) //Legs
                     {
-                        Peep.ItemName[i] = "Wooden legs";
-                        Peep.ItemType[i] = 5;
-                        Console.WriteLine($"{Peep.ItemName[i]}");
+                        ItemName[i] = "Wooden legs";
+                        ItemType[i] = 5;
+                        if (WasInShop == 1)
+                        {
+                            Peep.ItemPrice[i] = 25;
+                        }
+                        Console.Write($"{ItemName[i]}");
                     }
-                    if (Peep.ItemN[i] == 6) //Shield
+                    if (ItemIDs[i] == 6) //Shield
                     {
-                        Peep.ItemName[i] = "Wooden shield";
-                        Peep.ItemType[i] = 6;
-                        Console.WriteLine($"{Peep.ItemName[i]}");
+                        ItemName[i] = "Wooden shield";
+                        ItemType[i] = 6;
+                        if (WasInShop == 1)
+                        {
+                            Peep.ItemPrice[i] = 20;
+                        }
+                        Console.Write($"{ItemName[i]}");
                     }
-                    if (Peep.ItemN[i] == 7) //Weapon
+                    if (ItemIDs[i] == 7) //Weapon
                     {
-                        Peep.ItemName[i] = "Wooden sword";
-                        Peep.ItemType[i] = 7;
-                        Console.WriteLine($"{Peep.ItemName[i]}");
+                        ItemName[i] = "Wooden sword";
+                        ItemType[i] = 7;
+                        if (WasInShop == 1)
+                        {
+                            Peep.ItemPrice[i] = 20;
+                        }
+                        Console.Write($"{ItemName[i]}");
                     }
                 }
+                if (WasInShopName == 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($" [{Peep.ItemPrice[i]}]");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                else Console.WriteLine("");
             }
         }
         public static void HealingPotion()
@@ -1227,6 +1333,7 @@ namespace RDRPG
         {
             while (true)
             {
+                WasInShopName = 0;
                 itemID = rnd.Next(1, 8);
                 Console.Clear();
                 Console.WriteLine($"{Peep.Name}'s inventory");
@@ -1240,7 +1347,7 @@ namespace RDRPG
                 }
                 else
                 {
-                    InventoryItem();
+                    ListOfItems(Peep.InventorySpace, Peep.ItemN, Peep.ItemName, Peep.ItemType);
                 }
                 Console.WriteLine($"----------------------------");
                 if (Peep.InventorySpace > 0)
@@ -1377,6 +1484,7 @@ namespace RDRPG
                 Console.WriteLine($"You rolled rolled dice {Peep.firstDice} and {Peep.secondDice}");
                 if (Peep.firstDice + Peep.secondDice > 6)
                 {
+                    WasInShop = 0;
                     Encounter();
                 }
                 else
