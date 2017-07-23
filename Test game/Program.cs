@@ -8,7 +8,7 @@ namespace RDRPG
 {
     class Program
     {
-        public static string GameVer = "0.0.2-WiP";
+        public static string GameVer = "0.0.2";
         public static string GameName = "Rolling dice RPG";
         public static int itemID;
         public static int WasInShop;
