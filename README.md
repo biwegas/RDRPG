@@ -13,6 +13,7 @@ I started it because I felt it will be easiest way to learn C# (Console applicat
   - Name selection *with character limit*
   - Class selection
   - Game menu
+  - Shop, Gear, Inventory menu (**New Release**)
 - Combat:
   - Strong attack
   - Normal attack
