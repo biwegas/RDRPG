@@ -14,6 +14,7 @@ namespace RDRPG
         public static int WasInShop;
         public static int WasInShopName;
         public static int ShopItemCount;
+        public static List<int> ShopItemsID = new List<int>();
         static Person Peep = new Person();
         static Enemy BadGuy = new Enemy();
         static Random rnd = new Random();
@@ -338,7 +339,7 @@ namespace RDRPG
                                 Peep.Class = 9;
                                 Peep.upgPoints = 0;
                                 Peep.className = "Cheat";
-                                Peep.goldAmount = 1000;
+                                Peep.goldAmount = 50;
                                 Peep.xpAmount = 0;
                                 Peep.maxXpAmount = 35;
                                 Peep.Level = 1;
@@ -751,7 +752,7 @@ namespace RDRPG
         }
         public static void BuyItem()
         {
-            if (Peep.goldAmount > Peep.ItemPrice[Peep.SelectedShop])
+            if (Peep.goldAmount >= Peep.ItemPrice[Peep.SelectedShop])
             {
                 if (Peep.InventorySpace < Peep.MaxInventorySpace)
                 {
@@ -778,18 +779,30 @@ namespace RDRPG
             }
             else
             {
-                Console.WriteLine("You Don't have enough money");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("You don't have enough money");
+                System.Threading.Thread.Sleep(400);
+                Console.ForegroundColor = ConsoleColor.Gray;
             }
         }
         public static void Shop()
         {
             if (WasInShop == 0)
             {
-                ShopItemCount = rnd.Next(2, 6);
+                ShopItemsID.Clear();
+                ShopItemCount = rnd.Next(2, 5);
                 for (int i = 0; i < ShopItemCount; i++)
                 {
-                    Peep.ItemsIShop[i] = rnd.Next(1, 8);
+                    int rndnmb = rnd.Next(1, 8);
+                    if (ShopItemsID.Contains(rndnmb))
+                    {
+                        rndnmb = rnd.Next(1, 8);
+                        ShopItemsID.Add(rndnmb);
+                    }
+                    else ShopItemsID.Add(rndnmb);
+                    //Peep.ItemsIShop[i] = rnd.Next(1, 8);
                 }
+                ShopItemsID.CopyTo(Peep.ItemsIShop);
             }
             Peep.SelectedShop = 0;
             while (true)
@@ -1291,6 +1304,32 @@ namespace RDRPG
                 }
             }
         }
+        public static void SellItem()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.Write($"Do you really want to sell [{Peep.ItemName[Peep.SelectedItem]}] for");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($" {Convert.ToInt32(Peep.ItemPrice[Peep.SelectedItem]*0.75)}");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine($" gold pieces");
+                Console.WriteLine($"----------------------------");
+                Console.WriteLine("Press Enter to sell");
+                Console.WriteLine("Press Escape to return to inventory");
+                var k = Console.ReadKey(true);
+                if (k.Key == ConsoleKey.Enter)
+                {
+                    Peep.goldAmount = Peep.goldAmount + Convert.ToInt32(Peep.ItemPrice[Peep.SelectedItem] * 0.75);
+                    RemoveItem();
+                    Inventory();
+                }
+                if (k.Key == ConsoleKey.Escape)
+                {
+                    Inventory();
+                }
+            }
+        }
         public static void Gear()
         {
             Peep.SelectedWear = 0;
@@ -1369,6 +1408,10 @@ namespace RDRPG
         }
         public static void Inventory()
         {
+            if (Peep.tilesTraveled % 100 < 5)
+            {
+                WasInShop = 1;
+            }
             while (true)
             {
                 WasInShopName = 0;
@@ -1391,6 +1434,12 @@ namespace RDRPG
                 {
                     Console.WriteLine($"Press Up or Down to select item");
                     Console.WriteLine($"Press Enter to access selected item");
+                    if (WasInShop == 1)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Press S to sell selected item");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
                 }
                 Console.WriteLine("Press G to access gear menu");
                 Console.WriteLine("Press Escape to exit.");
@@ -1403,6 +1452,16 @@ namespace RDRPG
                 if (k.Key == ConsoleKey.G)
                 {
                     Gear();
+                }
+                if (Peep.InventorySpace > 0)
+                {
+                    if (WasInShop == 1)
+                    {
+                        if (k.Key == ConsoleKey.S)
+                        {
+                            SellItem();
+                        }
+                    }
                 }
                 if (k.Key == ConsoleKey.UpArrow)
                 {
@@ -1421,10 +1480,13 @@ namespace RDRPG
                     }
                     else Peep.SelectedItem = 0;
                 }
-                if (k.Key == ConsoleKey.Add)
+                if (Peep.Class == 9)
                 {
-                    itemID = rnd.Next(1, 8);
-                    Additem();
+                    if (k.Key == ConsoleKey.Add)
+                    {
+                        itemID = rnd.Next(1, 8);
+                        Additem();
+                    }
                 }
                 if (k.Key == ConsoleKey.Enter)
                 {
@@ -1475,7 +1537,7 @@ namespace RDRPG
                     LvlUpMenu();
                 }
             }
-            if (Peep.tilesTraveled % 100 < 6)
+            if (Peep.tilesTraveled % 100 < 5)
             {
                 if (k.Key == ConsoleKey.W)
                 {
