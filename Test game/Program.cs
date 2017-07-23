@@ -560,7 +560,7 @@ namespace RDRPG
         }
         public static void Block()
         {
-            int RandomEHit = rnd.Next(0, Convert.ToInt32(BadGuy.EnemyATT));
+            int RandomEHit = rnd.Next(1, Convert.ToInt32(BadGuy.EnemyATT) + 1);
             double ChanceToBlock = rnd.NextDouble();
             if (Peep.defPoints > RandomEHit)
             {
@@ -569,7 +569,7 @@ namespace RDRPG
                     int HitAfterBlock = Peep.defPoints - RandomEHit;
                     Console.WriteLine("You succesfully blocked an attack.");
                     double ChanceToHitAfterBlock = rnd.NextDouble();
-                    if (ChanceToHitAfterBlock > 0.7)
+                    if (ChanceToHitAfterBlock > 0.8)
                     {
                         if (HitAfterBlock > 0)
                         {
@@ -689,10 +689,14 @@ namespace RDRPG
         public static void WinEncounter()
         {
 
-            double GainedExp = Math.Ceiling(0.6 * Math.Pow(Peep.Level, GetRandomNumber(1.8, 1.9)));
+            double GainedExp = Math.Round(0.6 * Math.Pow(Peep.Level, GetRandomNumber(1.8, 1.9)));
             if (GainedExp == 0)
             {
-                GainedExp = 1;
+                GainedExp = 2;
+            }
+            if (GainedExp == 1)
+            {
+                GainedExp = 3;
             }
             Console.WriteLine($"You won and you gained {GainedExp} Exp.");
             Peep.xpAmount = Peep.xpAmount + GainedExp;
@@ -1515,7 +1519,7 @@ namespace RDRPG
             {
                 Console.WriteLine("Press Q if you want to fight the Boss");
             }
-            if (Peep.tilesTraveled % 100 < 6 & Peep.tilesTraveled != 0)
+            if (Peep.tilesTraveled % 100 < 5 && Peep.tilesTraveled > 5)
             {
                 Console.WriteLine("Press W to access shop");
             }
@@ -1537,7 +1541,7 @@ namespace RDRPG
                     LvlUpMenu();
                 }
             }
-            if (Peep.tilesTraveled % 100 < 5)
+            if (Peep.tilesTraveled % 100 < 5 && Peep.tilesTraveled > 5)
             {
                 if (k.Key == ConsoleKey.W)
                 {
